@@ -1,4 +1,4 @@
-module github.com/hegedustibor/htgo-tts
+module github.com/dcam0050/htgo-tts
 
 go 1.17
 

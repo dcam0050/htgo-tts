@@ -10,6 +10,7 @@ import (
 )
 
 type Native struct {
+	otoCtx *oto.Context
 }
 
 func (n *Native) Play(fileName string) error {
@@ -30,13 +31,16 @@ func (n *Native) Play(fileName string) error {
 	numOfChannels := 2
 	audioBitDepth := 2
 
-	otoCtx, readyChan, err := oto.NewContext(decodedMp3.SampleRate(), numOfChannels, audioBitDepth)
-	if err != nil {
-		return err
+	if n.otoCtx == nil {
+		otoCtx, readyChan, err := oto.NewContext(decodedMp3.SampleRate(), numOfChannels, audioBitDepth)
+		if err != nil {
+			return err
+		}
+		<-readyChan
+		n.otoCtx = otoCtx
 	}
-	<-readyChan
 
-	player := otoCtx.NewPlayer(decodedMp3)
+	player := n.otoCtx.NewPlayer(decodedMp3)
 
 	player.Play()
 
